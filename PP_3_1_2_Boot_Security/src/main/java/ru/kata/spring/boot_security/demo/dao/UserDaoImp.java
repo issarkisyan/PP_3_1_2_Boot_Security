@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.dao;
 
 import org.springframework.stereotype.Repository;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
@@ -16,6 +17,10 @@ public class UserDaoImp implements UserDao {
         entityManager.persist(user);
     }
 
+    public void createRole(Role role) {
+        entityManager.persist(role);
+    }
+
     public User findByUsername(String username) {
         return readListUsers().stream().filter(user -> Objects.equals(user.getUsername(), username)).findAny().orElse (null);
     }
@@ -28,8 +33,8 @@ public class UserDaoImp implements UserDao {
         return readListUsers().stream().filter(user -> user.getId() == id).findAny().orElse (null);
     }
 
-    public void update(long id, User updatedUser) {
-        User userToBeUpdated = show(id);
+    public void update(User updatedUser) {
+        User userToBeUpdated = show(updatedUser.getId());
         userToBeUpdated.setUsername(updatedUser.getUsername());
         userToBeUpdated.setPassword(updatedUser.getPassword());
         userToBeUpdated.setEmail(updatedUser.getEmail());

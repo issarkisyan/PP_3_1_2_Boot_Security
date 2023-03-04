@@ -16,6 +16,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +39,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
         return new org.springframework.security.core.userdetails.User(loadUserByUsername.getUsername(), loadUserByUsername.getPassword(), mapRolesToAuthorities(loadUserByUsername.getRoles()));
     }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRole())).collect(Collectors.toList());
     }
     @Transactional(readOnly = true)
@@ -49,13 +50,18 @@ public class UserServiceImp implements UserService, UserDetailsService {
     public void createUser(User user) {
         this.userDao.createUser(user);
     }
+
+    @Transactional
+    public void createRole(Role role) {
+        this.userDao.createRole(role);
+    }
     @Transactional(readOnly = true)
     public List<User> readListUsers() {
         return this.userDao.readListUsers();
     }
     @Transactional
-    public void update(long id, User updatedUser) {
-        this.userDao.update(id,updatedUser);
+    public void update(User updatedUser) {
+        this.userDao.update(updatedUser);
     }
     @Transactional
     public void delete(long id) {
